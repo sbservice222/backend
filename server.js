@@ -21,6 +21,9 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use("/api/admin", adminRoutes);
 
+app.use("/api/auth", authRoutes);
+app.use("/api/otp", otpRoutes);
+
 /* =====================================================
    DATABASE CONNECTION (MongoDB Atlas)
 ===================================================== */

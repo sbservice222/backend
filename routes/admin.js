@@ -17,6 +17,8 @@ let adminData = {
 /* =========================================
    GET ADMIN DATA
 ========================================= */
+console.log("✅ Admin routes loaded");
+
 router.get("/data", (req, res) => {
   res.json(adminData);
 });
