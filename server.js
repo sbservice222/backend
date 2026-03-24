@@ -6,6 +6,7 @@ const crypto = require("crypto");
 const axios = require("axios");
 const checksum_lib = require("paytmchecksum");
 const mongoose = require("mongoose");
+const adminRoutes = require("./routes/admin");
 
 /* =====================================================
    CREATE EXPRESS APP
@@ -18,6 +19,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use("/api/admin", adminRoutes);
 
 /* =====================================================
    DATABASE CONNECTION (MongoDB Atlas)
