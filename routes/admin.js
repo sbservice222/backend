@@ -1,8 +1,8 @@
 const express = require("express");
 const router = express.Router();
 
-// GLOBAL STORAGE
-let siteData = {
+// TEMP MEMORY STORAGE (later MongoDB)
+let adminData = {
   headerText: "Special Offer!",
   categories: [],
   services: [],
@@ -14,16 +14,31 @@ let siteData = {
   closedDates: []
 };
 
-// GET DATA
+/* =========================================
+   GET ADMIN DATA
+========================================= */
 router.get("/data", (req, res) => {
-  res.json(siteData);
+  res.json(adminData);
 });
 
-// SAVE DATA
-router.post("/data", (req, res) => {
-  siteData = req.body;
-  console.log("✅ Data updated:", siteData);
-  res.json({ success: true });
+/* =========================================
+   SAVE ADMIN DATA
+========================================= */
+router.post("/save", (req, res) => {
+  try {
+    adminData = { ...adminData, ...req.body };
+
+    res.json({
+      success: true,
+      message: "Data saved successfully"
+    });
+  } catch (err) {
+    console.error("Admin Save Error:", err);
+    res.status(500).json({
+      success: false,
+      message: "Failed to save data"
+    });
+  }
 });
 
 module.exports = router;
