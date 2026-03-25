@@ -1,45 +1,57 @@
 const express = require("express");
 const router = express.Router();
-
-// TEMP MEMORY STORAGE (later MongoDB)
-let adminData = {
-  headerText: "Special Offer!",
-  categories: [],
-  services: [],
-  coupons: [],
-  socials: [],
-  logos: [],
-  waSubscribers: [],
-  blogs: [],
-  closedDates: []
-};
+const AdminData = require("../models/AdminData");
 
 /* =========================================
-   GET ADMIN DATA
+   GET DATA
 ========================================= */
-console.log("✅ Admin routes loaded");
+router.get("/data", async (req, res) => {
+  try {
+    let data = await AdminData.findOne();
 
-router.get("/data", (req, res) => {
-  res.json(adminData);
+    if (!data) {
+      data = await AdminData.create({
+        headerText: "Special Offer!",
+        categories: [],
+        services: [],
+        coupons: [],
+        socials: [],
+        logos: [],
+        waSubscribers: [],
+        blogs: [],
+        closedDates: []
+      });
+    }
+
+    res.json(data);
+  } catch (err) {
+    console.error("GET ERROR:", err);
+    res.status(500).json({ error: "Failed to load data" });
+  }
 });
 
 /* =========================================
-   SAVE ADMIN DATA
+   SAVE DATA
 ========================================= */
-router.post("/save", (req, res) => {
+router.post("/save", async (req, res) => {
   try {
-    adminData = { ...adminData, ...req.body };
+    let data = await AdminData.findOne();
+
+    if (!data) {
+      data = new AdminData(req.body);
+    } else {
+      Object.assign(data, req.body);
+    }
+
+    await data.save();
 
     res.json({
       success: true,
-      message: "Data saved successfully"
+      message: "Saved to MongoDB ✅"
     });
   } catch (err) {
-    console.error("Admin Save Error:", err);
-    res.status(500).json({
-      success: false,
-      message: "Failed to save data"
-    });
+    console.error("SAVE ERROR:", err);
+    res.status(500).json({ error: "Failed to save" });
   }
 });
 
