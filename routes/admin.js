@@ -3,7 +3,25 @@ const router = express.Router();
 const AdminData = require("../models/AdminData");
 
 /* =========================================
-   GET DATA
+   🔐 ADMIN TOKEN (CHANGE THIS)
+========================================= */
+const ADMIN_TOKEN = "SB@9876#PRIVATE!TOKEN";
+
+/* =========================================
+   🔐 AUTH MIDDLEWARE
+========================================= */
+const checkAuth = (req, res, next) => {
+  const token = req.headers.authorization;
+
+  if (!token || token.trim() !== ADMIN_TOKEN) {
+    return res.status(403).json({ message: "Unauthorized ❌" });
+  }
+
+  next();
+};
+
+/* =========================================
+   GET DATA (PUBLIC - NO TOKEN)
 ========================================= */
 router.get("/data", async (req, res) => {
   try {
@@ -31,9 +49,9 @@ router.get("/data", async (req, res) => {
 });
 
 /* =========================================
-   SAVE DATA
+   SAVE DATA (PROTECTED 🔒)
 ========================================= */
-router.post("/save", async (req, res) => {
+router.post("/data", checkAuth, async (req, res) => {
   try {
     let data = await AdminData.findOne();
 
